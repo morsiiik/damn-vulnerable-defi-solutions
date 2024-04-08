@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./TrustfulOracle.sol";
 import "../DamnValuableNFT.sol";
 
+import "hardhat/console.sol";
+
 /**
  * @title Exchange
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
@@ -32,16 +34,19 @@ contract Exchange is ReentrancyGuard {
 
     function buyOne() external payable nonReentrant returns (uint256 id) {
         if (msg.value == 0)
-            revert InvalidPayment();
+           revert InvalidPayment();
 
+        console.log(msg.value);
         // Price should be in [wei / NFT]
         uint256 price = oracle.getMedianPrice(token.symbol());
         if (msg.value < price)
             revert InvalidPayment();
 
         id = token.safeMint(msg.sender);
+        console.log("ID", id);
         unchecked {
             payable(msg.sender).sendValue(msg.value - price);
+            console.log("SendValue");
         }
 
         emit TokenBought(msg.sender, id, price);

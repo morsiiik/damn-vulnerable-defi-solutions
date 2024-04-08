@@ -6,6 +6,7 @@ import "solmate/src/utils/ReentrancyGuard.sol";
 import { SafeTransferLib, ERC4626, ERC20 } from "solmate/src/mixins/ERC4626.sol";
 import "solmate/src/auth/Owned.sol";
 import { IERC3156FlashBorrower, IERC3156FlashLender } from "@openzeppelin/contracts/interfaces/IERC3156.sol";
+import "hardhat/console.sol";
 
 /**
  * @title UnstoppableVault
@@ -94,6 +95,8 @@ contract UnstoppableVault is IERC3156FlashLender, ReentrancyGuard, Owned, ERC462
         if (address(asset) != _token) revert UnsupportedCurrency(); // enforce ERC3156 requirement
         uint256 balanceBefore = totalAssets();
         if (convertToShares(totalSupply) != balanceBefore) revert InvalidBalance(); // enforce ERC4626 requirement
+        console.log("total supply: ",totalSupply);
+        console.log("total assets: ",totalAssets());
         uint256 fee = flashFee(_token, amount);
         // transfer tokens out + execute callback on receiver
         ERC20(_token).safeTransfer(address(receiver), amount);

